@@ -1,0 +1,9 @@
+.editorconfig
+.eslintcache
+.prettierignore
+.vscode/
+cspell.json
+eslint.config.js
+project-words.txt
+tsconfig*
+src/
