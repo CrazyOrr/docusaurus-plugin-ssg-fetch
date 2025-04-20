@@ -1,0 +1,41 @@
+{
+  "name": "docusaurus-plugin-ssg-fetch",
+  "version": "0.0.1",
+  "description": "A Docusaurus plugin that allows you to fetch remote content while doing static site generation.",
+  "keywords": [
+    "docusaurus"
+  ],
+  "homepage": "https://github.com/CrazyOrr/docusaurus-plugin-ssg-fetch#readme",
+  "bugs": {
+    "url": "https://github.com/CrazyOrr/docusaurus-plugin-ssg-fetch/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrazyOrr/docusaurus-plugin-ssg-fetch.git"
+  },
+  "license": "MIT",
+  "author": "CrazyOrr",
+  "type": "module",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --cache ./src",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check-spelling": "cspell \"**\""
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.2.8",
+    "@eslint/js": "^9.24.0",
+    "cspell": "^8.19.0",
+    "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.30.1"
+  }
+}

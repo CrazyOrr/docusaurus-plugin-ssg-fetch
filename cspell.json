@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "import": "@cspell/cspell-bundled-dicts", // See: https://github.com/streetsidesoftware/vscode-spell-checker/issues/2864
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      "path": "./project-words.txt",
+      "addWords": true
+    }
+  ],
+  "dictionaries": ["project-words"],
+  "useGitignore": true,
+  "ignorePaths": ["project-words.txt"]
+}
