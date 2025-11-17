@@ -28,7 +28,8 @@ describe("pluginSsgFetch()", () => {
         .fn()
         .mockImplementationOnce(() => Promise.resolve(data[0]))
         .mockImplementationOnce(() => Promise.resolve(data[1]));
-      const mockFetch = jest.fn(() =>
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const mockFetch = jest.fn((_url: string) =>
         Promise.resolve({
           json: mockJson,
         }),
