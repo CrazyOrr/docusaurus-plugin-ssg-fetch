@@ -25,7 +25,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "jest",
-    "lint": "eslint --cache ./src",
+    "lint": "eslint --cache .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check-spelling": "cspell \"**\""
