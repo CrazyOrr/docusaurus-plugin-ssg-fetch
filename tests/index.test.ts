@@ -1,4 +1,7 @@
-import type { LoadContext } from "@docusaurus/types";
+import type {
+  LoadContext,
+  PluginContentLoadedActions,
+} from "@docusaurus/types";
 import { docuHash, normalizeUrl } from "@docusaurus/utils";
 import { normalizePluginOptions } from "@docusaurus/utils-validation";
 import { describe, expect, it, jest } from "@jest/globals";
@@ -25,42 +28,40 @@ describe("pluginSsgFetch()", () => {
       ];
       const data = [[1, 2, 3], { a: 1, b: 2 }];
       const mockJson = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.resolve(data[0]))
-        .mockImplementationOnce(() => Promise.resolve(data[1]));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const mockFetch = jest.fn((_url: string) =>
-        Promise.resolve({
-          json: mockJson,
-        }),
-      );
-      // @ts-expect-error Override global.fetch
-      global.fetch = mockFetch;
+        .fn<() => Promise<(typeof data)[number]>>()
+        .mockResolvedValueOnce(data[0])
+        .mockResolvedValueOnce(data[1]);
+      const fetchSpy = jest.spyOn(globalThis, "fetch").mockResolvedValue({
+        json: mockJson,
+      } as unknown as Response);
       const plugin = await pluginSsgFetch({} as LoadContext, {
         configs,
       });
       const loadedData = await plugin.loadContent!();
 
-      expect(mockFetch).toHaveBeenNthCalledWith(1, configs[0].url);
-      expect(mockFetch).toHaveBeenNthCalledWith(2, configs[1].url);
+      expect(fetchSpy).toHaveBeenNthCalledWith(1, configs[0].url);
+      expect(fetchSpy).toHaveBeenNthCalledWith(2, configs[1].url);
       expect(mockJson).toHaveBeenCalledTimes(2);
       expect(loadedData).toEqual(data);
+
+      fetchSpy.mockRestore();
     });
 
     it("returns {} when load failed", async () => {
-      const mockJson = jest.fn(() => Promise.reject("Illegal JSON"));
-      const mockFetch = jest
-        .fn()
+      const mockJson = jest
+        .fn<() => Promise<unknown>>()
+        .mockRejectedValue("Illegal JSON");
+      const fetchSpy = jest
+        .spyOn(globalThis, "fetch")
         // first time fetch() throws
-        .mockImplementationOnce(() => Promise.reject("Network problem"))
+        .mockRejectedValueOnce("Network problem")
         // second time json() throws
-        .mockImplementationOnce(() =>
-          Promise.resolve({
-            json: mockJson,
-          }),
-        );
-      // @ts-expect-error Override global.fetch
-      global.fetch = mockFetch;
+        .mockResolvedValueOnce({
+          json: mockJson,
+        } as unknown as Response);
+      const errorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(jest.fn());
       const plugin = await pluginSsgFetch({} as LoadContext, {
         configs: [
           {
@@ -77,9 +78,14 @@ describe("pluginSsgFetch()", () => {
       });
       const loadedData = await plugin.loadContent!();
 
-      expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
       expect(mockJson).toHaveBeenCalledTimes(1);
+      expect(errorSpy).toHaveBeenNthCalledWith(1, "Network problem");
+      expect(errorSpy).toHaveBeenNthCalledWith(2, "Illegal JSON");
       expect(loadedData).toEqual([{}, {}]);
+
+      errorSpy.mockRestore();
+      fetchSpy.mockRestore();
     });
   });
 
@@ -108,9 +114,9 @@ describe("pluginSsgFetch()", () => {
       );
       const dataPaths = ["data1.json", "data2.json"];
       const mockCreateData = jest
-        .fn()
-        .mockImplementationOnce(() => Promise.resolve(dataPaths[0]))
-        .mockImplementationOnce(() => Promise.resolve(dataPaths[1]));
+        .fn<PluginContentLoadedActions["createData"]>()
+        .mockResolvedValueOnce(dataPaths[0])
+        .mockResolvedValueOnce(dataPaths[1]);
       const mockAddRoute = jest.fn();
       await plugin.contentLoaded!({
         content: data,
