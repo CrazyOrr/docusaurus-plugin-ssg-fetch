@@ -22,7 +22,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf lib && tsc",
     "watch": "tsc --watch",
     "test": "jest",
     "lint": "eslint --cache .",
@@ -40,6 +40,7 @@
     "globals": "^16.5.0",
     "jest": "^30.2.0",
     "prettier": "^3.6.2",
+    "rimraf": "^6.1.2",
     "ts-jest": "^29.4.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0"
